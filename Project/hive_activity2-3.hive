@@ -1,0 +1,30 @@
+DROP TABLE episodes;
+DROP TABLE episodeIV;
+
+-- Make the tables for each input file
+-- Input table
+CREATE TABLE episodes (name STRING, line STRING)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+TBLPROPERTIES("skip.header.line.count"="2");
+
+-- LOAD data into each table
+LOAD DATA LOCAL INPATH '/root/inputs/episodeIV_dialouges.txt' INTO TABLE episodes;
+LOAD DATA LOCAL INPATH '/root/inputs/episodeV_dialouges.txt' INTO TABLE episodes;
+LOAD DATA LOCAL INPATH '/root/inputs/episodeVI_dialouges.txt' INTO TABLE episodes;
+
+-- Activity 1
+INSERT OVERWRITE DIRECTORY '/user/Kokila/HiveProjectOutput'
+SELECT name, COUNT(name) AS no_of_lines FROM episodes GROUP BY name ORDER BY no_of_lines DESC;
+
+-- Activity 2
+-- Input table
+CREATE TABLE episodeIV (name STRING, line STRING)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+TBLPROPERTIES("skip.header.line.count"="2");
+
+--LOAD data into table
+LOAD DATA LOCAL INPATH 'root/inputs/episodeIV_dialouges.txt' INTO TABLE episodeIV;
+
+-- Query to count lines
+SELECT COUNT(*) FROM episodeIV WHERE INSTR(line, 'Luke') >= 1;
+
